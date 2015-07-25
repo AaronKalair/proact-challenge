@@ -1,14 +1,25 @@
-import peewee
-from peewee import *
+from peewee import Model, TextField, IntegerField, MySQLDatabase
+import settings
+
+database = MySQLDatabase(
+    settings.DATABASE,
+    user=settings.USERNAME,
+    passwd=settings.PASSWORD
+)
 
 
-class PatientMeasurements(peewee.Model):
-    subject_id = peewee.IntegerField()
-    feature_name = peewee.TextField()
-    value = peewee.TextField(null=True)
-    delta = peewee.IntegerField(null=True)
+class BaseModel(Model):
+    class Meta:
+        database = database
 
 
-class Features(peewee.Model):
-    feature_name = peewee.TextField()
-    form_name = peewee.TextField()
+class PatientMeasurement(BaseModel):
+    subject_id = IntegerField()
+    feature_name = TextField()
+    value = TextField(null=True)
+    delta = IntegerField(null=True)
+
+
+class Feature(BaseModel):
+    feature_name = TextField()
+    form_name = TextField()

@@ -1,0 +1,11 @@
+SubjectID|form_name|feature_name|feature_value|feature_unit|feature_delta
+4205|Lab Test|Gamma-glutamyltransferase|58|U/L|92
+4205|Lab Test|AST(SGOT)|39|U/L|92
+4205|ALSHX|onset_site|Limb|NA|0
+4205|Lab Test|Alkaline phosphatase|64|U/L|92
+4205|Vitals|bp_systolic|118|mmHg|92
+4205|Lab Test|ALT(SGPT)|27|U/L|92
+4205|Riluzole|if_use_Riluzole|Yes|NA|0
+4205|Vitals|weight|63.8|kg|365
+4205|Vitals|weight|69.1|kg|183
+4205|Vitals|bp_diastolic|66|mmHg|365

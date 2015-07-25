@@ -1,1 +1,5 @@
 all_forms_PROACT.txt
+*.pyc
+*.swp
+.DS_Store
+all_forms_validate_spike.txt
