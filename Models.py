@@ -4,7 +4,8 @@ import settings
 database = MySQLDatabase(
     settings.DATABASE,
     user=settings.USERNAME,
-    passwd=settings.PASSWORD
+    passwd=settings.PASSWORD,
+    host=settings.HOST
 )
 
 

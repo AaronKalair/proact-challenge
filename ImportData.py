@@ -56,7 +56,8 @@ def create_database_connection():
         db = MySQLDatabase(
             settings.DATABASE,
             user=settings.USERNAME,
-            passwd=settings.PASSWORD
+            passwd=settings.PASSWORD,
+            host=settings.HOST
         )
         db.connect()
     except Exception as e:
