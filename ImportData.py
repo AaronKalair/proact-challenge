@@ -1,3 +1,4 @@
+from __future__ import division
 import csv
 import datetime
 from math import ceil
@@ -9,15 +10,15 @@ import settings
 
 
 #TRAINING_DATA_FILE_NAME = "all_forms_PROACT.txt"
-#TRAINING_DATA_FILE_NAME = "all_forms_validate_spike.txt"
-TRAINING_DATA_FILE_NAME = "test_data.txt"
+TRAINING_DATA_FILE_NAME = "all_forms_validate_spike.txt"
+#TRAINING_DATA_FILE_NAME = "test_data.txt"
 SUBJECT_ID = 0
 FORM_NAME = 1
 FEATURE_NAME = 2
 FEATURE_VALUE = 3
 FEATURE_UNIT = 4
 FEATURE_DELTA = 5
-DROP_EXISTING_TABLES = True
+DROP_EXISTING_TABLES = False
 CREATE_TABLES = True
 BATCH_SIZE = 1000
 seen_features = set()
@@ -73,10 +74,24 @@ def create_tables():
         raise
 
 
+def insert_feature_if_not_present(row):
+    if not row[FEATURE_NAME] in seen_features:
+        Feature(
+            feature_name=row[FEATURE_NAME],
+            form_name=row[FORM_NAME]
+        ).save()
+        seen_features.add(row[FEATURE_NAME])
+
+
 def yield_x_rows(rows, start_index, x):
     """Yields x rows beginning at start_index from rows"""
     for i in xrange(x):
-        row = rows[start_index + i]
+        try:
+            row = rows[start_index + i]
+        except IndexError:
+            # Batch size is larger than whats left we're done
+            break
+        insert_feature_if_not_present(row)
         res = {
             "subject_id": row[SUBJECT_ID],
             "feature_name": row[FEATURE_NAME],
@@ -104,7 +119,8 @@ with open(TRAINING_DATA_FILE_NAME, "rb") as csvfile:
     # xrange does not include the final number but its fine because we index
     # from 0
     start_time = datetime.datetime.now()
-    for _ in xrange(int(ceil(number_of_rows / BATCH_SIZE))):
+    upper_limit = int(ceil(number_of_rows / BATCH_SIZE))
+    for _ in xrange(upper_limit):
         batch_start_time = datetime.datetime.now()
         PatientMeasurement.insert_many(
             yield_x_rows(row_list, start_index, BATCH_SIZE)
@@ -114,29 +130,13 @@ with open(TRAINING_DATA_FILE_NAME, "rb") as csvfile:
             (batch_end_time - batch_start_time).total_seconds()
         print "Inserted %s rows in %s seconds" % (BATCH_SIZE, batch_time_taken)
         start_index += BATCH_SIZE
+        rows_remaining = number_of_rows - start_index
+        estimated_time_remaining = \
+            (rows_remaining / BATCH_SIZE) * batch_time_taken
+        print "%d rows remaining, estimated time %d" % (
+            rows_remaining, estimated_time_remaining
+        )
     end_time = datetime.datetime.now()
     time_taken = \
         (end_time - start_time).total_seconds()
     print "Inserted %s rows in %s seconds" % (number_of_rows, time_taken)
-
-
-    #for count, row in enumerate(reader):
-    #    try:
-    #        PatientMeasurement(
-    #            subject_id=row[SUBJECT_ID],
-    #            feature_name=row[FEATURE_NAME],
-    #            delta=validate_feature_value(row[FEATURE_DELTA]),
-    #            value=validate_feature_value(row[FEATURE_VALUE])
-    #        ).save()
-    #    except ValueError:
-    #        print row[SUBJECT_ID]
-    #        print row[FEATURE_NAME]
-    #        print row[FEATURE_DELTA]
-    #        print row[FEATURE_VALUE]
-    #        raise
-    #    if not row[FEATURE_NAME] in seen_features:
-    #        Feature(
-    #            feature_name=row[FEATURE_NAME],
-    #            form_name=row[FORM_NAME]
-    #        ).save()
-    #        seen_features.add(row[FEATURE_NAME])
