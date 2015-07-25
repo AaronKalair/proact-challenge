@@ -14,12 +14,12 @@ class BaseModel(Model):
 
 
 class PatientMeasurement(BaseModel):
-    subject_id = IntegerField()
-    feature_name = TextField()
+    subject_id = IntegerField(index=True)
+    feature_name = TextField(index=True)
     value = TextField(null=True)
-    delta = IntegerField(null=True)
+    delta = IntegerField(index=True, null=True)
 
 
 class Feature(BaseModel):
-    feature_name = TextField()
+    feature_name = TextField(index=True)
     form_name = TextField()

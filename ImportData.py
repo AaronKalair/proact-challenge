@@ -9,8 +9,8 @@ from Models import PatientMeasurement, Feature
 import settings
 
 
-#TRAINING_DATA_FILE_NAME = "all_forms_PROACT.txt"
-TRAINING_DATA_FILE_NAME = "all_forms_validate_spike.txt"
+TRAINING_DATA_FILE_NAME = "all_forms_PROACT.txt"
+#TRAINING_DATA_FILE_NAME = "all_forms_validate_spike.txt"
 #TRAINING_DATA_FILE_NAME = "test_data.txt"
 SUBJECT_ID = 0
 FORM_NAME = 1
