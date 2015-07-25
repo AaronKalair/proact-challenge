@@ -1,4 +1,4 @@
-from peewee import Model, TextField, IntegerField, MySQLDatabase
+from peewee import Model, IntegerField, MySQLDatabase, CharField
 import settings
 
 database = MySQLDatabase(
@@ -16,11 +16,11 @@ class BaseModel(Model):
 
 class PatientMeasurement(BaseModel):
     subject_id = IntegerField(index=True)
-    feature_name = TextField(index=True)
-    value = TextField(null=True)
+    feature_name = CharField(index=True)
+    value = CharField(null=True)
     delta = IntegerField(index=True, null=True)
 
 
 class Feature(BaseModel):
-    feature_name = TextField(index=True)
-    form_name = TextField()
+    feature_name = CharField(unique=True)
+    form_name = CharField()

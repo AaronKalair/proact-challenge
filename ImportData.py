@@ -76,12 +76,12 @@ def create_tables():
 
 
 def insert_feature_if_not_present(row):
-    if not row[FEATURE_NAME] in seen_features:
+    if not row[FEATURE_NAME].lower() in seen_features:
         Feature(
-            feature_name=row[FEATURE_NAME],
-            form_name=row[FORM_NAME]
+            feature_name=row[FEATURE_NAME].lower(),
+            form_name=row[FORM_NAME].lower()
         ).save()
-        seen_features.add(row[FEATURE_NAME])
+        seen_features.add(row[FEATURE_NAME].lower())
 
 
 def yield_x_rows(rows, start_index, x):
@@ -95,7 +95,7 @@ def yield_x_rows(rows, start_index, x):
         insert_feature_if_not_present(row)
         res = {
             "subject_id": row[SUBJECT_ID],
-            "feature_name": row[FEATURE_NAME],
+            "feature_name": row[FEATURE_NAME].lower(),
             "delta": validate_feature_value(row[FEATURE_DELTA]),
             "value": validate_feature_value(row[FEATURE_VALUE])
         }
